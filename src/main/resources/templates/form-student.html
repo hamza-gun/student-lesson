@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: html_head}"></head>
+<body>
+    <div class="container">
+        <h3>Student Directory</h3>
+        <hr>
+        <p class="h4 mb-4">Save Student</p>
+        <form th:action="@{/student/save-student}" method="post" th:object="${student}" class="student-from">
+            <!-- Add hidden form field to handle update -->
+            <div class="form-group">
+                <input type="hidden" th:field="*{id}" />
+            </div>
+            <div class="form-group">
+                <label for="firstName">Student First Name</label>
+                <input type="text" th:field="*{firstName}" class="form-control mb-4 col-4" id="firstName" placeholder="Student First Name" >
+                <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger">First Name error</div>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Student Last Name</label>
+                <input type="text" th:field="*{lastName}" class="form-control mb-4 col-4" id="lastName" placeholder="Student Last Name">
+                <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger">Last Name error</div>
+            </div>
+            <div class="form-group">
+                <label for="number">Student Number</label>
+                <input type="text" th:field="*{number}" class="form-control mb-4 col-4" id="number" placeholder="Student Number">
+                <div th:if="${#fields.hasErrors('number')}" th:errors="*{number}" class="text-danger">Number error</div>
+            </div>
+            <button type="submit" class="btn btn-info col-2">Save</button>
+            <button type="button" class="btn btn-danger col-2" onclick="location.href='/student/list-students'">Cancel</button>
+        </form>
+        <hr>
+        <a th:href="@{/student/list-students}">Back to student List</a>
+    </div>
+</body>
+</html>

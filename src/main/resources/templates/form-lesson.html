@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: html_head}"></head>
+<body>
+    <div class="container">
+        <h3>Lesson Directory</h3>
+        <hr>
+        <p class="h4 mb-4">Save Lesson</p>
+        <form th:action="@{/lesson/save-lesson}" method="post" th:object="${lesson}" class="student-from">
+            <div class="form-group">
+                <input type="hidden" th:field="*{id}" />
+            </div>
+            <div class="form-group">
+                <label for="lessonName">Lesson Name</label>
+                <input type="text" th:field="*{lessonName}" class="form-control mb-4 col-4" id="lessonName" placeholder="Lesson Name">
+                <div th:if="${#fields.hasErrors('lessonName')}" th:errors="*{lessonName}" class="text-danger">Lesson Name error</div>
+            </div>
+            <div class="form-group">
+                <label for="lessonCode">Lesson Code</label>
+                <input type="text" th:field="*{lessonCode}" class="form-control mb-4 col-4" id="lessonCode" placeholder="Lesson Code">
+                <div th:if="${#fields.hasErrors('lessonCode')}" th:errors="*{lessonCode}" class="text-danger">Lesson Code error</div>
+            </div>
+            <button type="submit" class="btn btn-info col-2">Save</button>
+            <button type="button" class="btn btn-danger col-2" onclick="location.href='/lesson/list-lessons'">Cancel</button>
+        </form>
+        <hr>
+        <a th:href="@{/lesson/list-lessons}">Back to Lesson List</a>
+    </div>
+</body>
+</html>

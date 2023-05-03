@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: html_head}"></head>
+<body>
+    <div class="container">
+        <h3>Note Directory</h3>
+        <hr>
+        <p class="h4 mb-4">Save Note</p>
+        <form th:action="@{/note/save-note}" method="post" th:object="${note}" class="note-form">
+            <div class="form-group">
+                <input type="hidden"  th:field="*{id}" />
+            </div>
+            <div class="form-group">
+                <label for="note">Note</label>
+                <input type="number" th:field="*{note}" class="form-control" id="note" placeholder="Note" style="width: 250px">
+                <div th:if="${#fields.hasErrors('note')}" th:errors="*{note}" class="text-danger">Note error</div>
+                <div th:if="${#fields.hasErrors('note')}" class="text-danger"></div>
+            </div>
+            <div class="form-group">
+                <label for="student">Student Name</label>
+                <select id="student" class="form-control" name="studentId" style="width: 250px">
+                    <option th:each="student : ${studentList}"
+                            th:value="${student.id}"
+                            th:utext="${student.firstName + ' ' + student.lastName}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="lesson">Lesson Name</label>
+                <select id="lesson" class="form-control" name="lessonId" style="width: 250px">
+                    <option th:each="lesson : ${lessonList}"
+                            th:value="${lesson.id}"
+                            th:text="${lesson.lessonName}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary col-2" value="save">Save</button>
+            <button type="button" class="btn btn-danger col-2" onclick="location.href='/note/list-notes'">Cancel</button>
+        </form>
+        <hr>
+        <a th:href="@{/note/list-notes}">Back to Note List</a>
+    </div>
+</body>
+</html>
