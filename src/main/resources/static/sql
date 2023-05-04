@@ -1,0 +1,38 @@
+CREATE TABLE student(
+    id INT NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    number VARCHAR(20) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE lesson(
+    id INT NOT NULL,
+    lesson_name VARCHAR(50) NOT NULL,
+    lesson_code VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE student_lessons (
+  id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  student_id INT NOT NULL,
+  lesson_id INT NOT NULL,
+  CONSTRAINT fk_student FOREIGN KEY (student_id)
+    REFERENCES student (id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_lesson FOREIGN KEY (lesson_id)
+    REFERENCES lesson (id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE student_lessons (
+  id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  student_id INT NOT NULL,
+  lesson_id INT NOT NULL,
+  CONSTRAINT fk_student FOREIGN KEY (student_id)
+    REFERENCES student (id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_lesson FOREIGN KEY (lesson_id)
+    REFERENCES lesson (id)
+    ON DELETE CASCADE
+);
