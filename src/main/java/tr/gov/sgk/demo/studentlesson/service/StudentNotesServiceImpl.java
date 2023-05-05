@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tr.gov.sgk.demo.studentlesson.dto.StudentNotesDTO;
 import tr.gov.sgk.demo.studentlesson.entity.StudentNotes;
+import tr.gov.sgk.demo.studentlesson.repository.LessonRepository;
 import tr.gov.sgk.demo.studentlesson.repository.NoteRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +18,10 @@ public class StudentNotesServiceImpl implements StudentNotesService {
     @Autowired
     private NoteRepository studentNotesRepository;
     @Autowired
+    private LessonRepository lessonRepository;
+    @Autowired
     private ModelMapper modelMapper;
+
 
     public StudentNotesDTO mapToStudentNotesDTO(StudentNotes studentNotes) {
         return modelMapper.map(studentNotes, StudentNotesDTO.class);
@@ -59,8 +62,18 @@ public class StudentNotesServiceImpl implements StudentNotesService {
         return studentNotesRepository.findByNote(note);
     }
 
-//    @Override
-//    public List<StudentNotes> findByLessonCode(String lessonCode) {
-//      return studentNotesRepository.findByLessonCode(lessonCode);
-//    }
+    @Override
+    public List<StudentNotes> findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(String lessonCode, String firstName, String lastName) {
+        return studentNotesRepository.findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(lessonCode, firstName, lastName);
+    }
+
+    public List<StudentNotes> findByKeyword(String keyword) {
+        if (keyword == null) {
+            keyword = "";
+        }
+        return studentNotesRepository.findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(keyword, keyword, keyword);
+    }
+    public List<StudentNotes> getNotesContainingKeyword(String keyword) {
+        return studentNotesRepository.findAllByNoteContaining(keyword);
+    }
 }

@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <head th:replace="~{fragments :: html_head}">
 </head>
@@ -14,13 +16,32 @@
             <a th:href="@{/note/pdf/note}"
                class="btn btn-info"> Note List PDF
             </a>
+<!--            <form th:action="@{/note/pdf/note}" method="post">-->
+<!--                <button type="submit">Generate PDF</button>-->
+<!--            </form>-->
         </div>
+<!--        <div class="text-left mb-3">-->
+<!--            <form th:action="@{/note/search-form-note}" method="post">-->
+<!--                <div class="form-group row">-->
+<!--                    <label for="note" class="col-sm-2 col-form-label">Note:</label>-->
+<!--                    <div class="col-sm-10">-->
+<!--                        <input type="text" class="form-control" id="note" name="note" placeholder="Enter Note">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="form-group row">-->
+<!--                    <div class="col-sm-12 text-left">-->
+<!--                        <button type="submit" class="btn btn-info">Search</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
         <div class="text-left mb-3">
-            <form th:action="@{/note/search-form-note}" method="post">
+            <form th:action="@{/note/search-form-note}" method="post" id="searchForm">
                 <div class="form-group row">
-                    <label for="note" class="col-sm-2 col-form-label">Note:</label>
+                    <label for="note" class="col-sm-2 col-form-label">Arama Kriteri Giriniz :</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="note" name="note" placeholder="Enter Note">
+                        <input type="text" class="form-control" id="note" name="keyword" placeholder="Arama Kriteri Giriniz"
+                               th:value="${keyword}" value="${keyword}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -29,6 +50,20 @@
                     </div>
                 </div>
             </form>
+<!--            <form th:action="@{/note/pdf/note(__${keyword}__)}" method="post">-->
+<!--                <label for="keyword">Keyword:</label>-->
+<!--                <input type="text" id="keyword" name="keyword" th:value="${keyword}">-->
+<!--                <button type="submit">Generate PDF</button>-->
+<!--            </form>-->
+            <script th:inline="javascript">
+                var timer;
+                $('input[name="keyword"]').on('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        $('#searchForm').submit();
+                    }, 1500);
+                });
+            </script>
         </div>
         <table class="table table-bordered table-striped table-responsive-md">
             <thead class="table-dark">

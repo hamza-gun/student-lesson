@@ -1,23 +1,31 @@
 package tr.gov.sgk.demo.studentlesson.controller;
-
-import com.itextpdf.text.DocumentException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfDocument;
+import com.lowagie.text.pdf.PdfWriter;
+import jakarta.persistence.Table;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import tr.gov.sgk.demo.studentlesson.dto.LessonDTO;
+import org.springframework.web.servlet.ModelAndView;
 import tr.gov.sgk.demo.studentlesson.dto.StudentNotesDTO;
 import org.modelmapper.ModelMapper;
-import tr.gov.sgk.demo.studentlesson.entity.Lesson;
 import tr.gov.sgk.demo.studentlesson.entity.StudentNotes;
 import tr.gov.sgk.demo.studentlesson.service.LessonService;
 import tr.gov.sgk.demo.studentlesson.service.StudentNotesService;
 import tr.gov.sgk.demo.studentlesson.service.StudentService;
-import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorLesson;
-import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorNote;
+//import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorNote;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,7 +39,6 @@ public class NoteController {
     private StudentService studentService;
     private LessonService lessonService;
     private final ModelMapper modelMapper;
-
     public NoteController(StudentNotesService studentNotesService, StudentService studentService,
                                   LessonService lessonService, ModelMapper modelMapper) {
         this.studentNotesService = studentNotesService;
@@ -47,33 +54,69 @@ public class NoteController {
         return "list-notes";
     }
 
-    @PostMapping("/search-form-note")
-    public String searchNotes(@RequestParam("note") Integer note, Model model){
-        if (note != null) {
-            List<StudentNotes> notes = studentNotesService.findByNote(note);
-//            List<StudentNotes> lessons = studentNotesService.findByLessonCode(lessonCode);
-            model.addAttribute("note", notes);
-//            model.addAttribute("lessonCode", lessons);
-        } else{
-            List<StudentNotesDTO> notes = studentNotesService.getAllNotes();
-            model.addAttribute("list-notes", notes);
-        }
-        return "list-notes";
-    }
 
-    @GetMapping("/pdf/note")
-    public void generator(HttpServletResponse response) throws DocumentException, IOException {
-        response.setContentType("application/pdf");
-        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
-        String currentDateTime = dateFormat.format(new Date());
-        String headerkey = "Content-Disposition";
-        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
-        response.setHeader(headerkey, headervalue);
-        List<StudentNotesDTO> notes = studentNotesService.getAllNotes();
-        PDFGeneratorNote generetorUser = new PDFGeneratorNote();
-        generetorUser.setNoteList(notes);
-        generetorUser.generate(response);
-    }
+
+//    @PostMapping("/search-form-note")
+//    public String searchNotes(@RequestParam("note") String lessonCode, Model model){
+//        if (lessonCode != null) {
+//            List<StudentNotes> notes = studentNotesService.findByLessonLessonCodeContainingIgnoreCase(lessonCode);
+//            model.addAttribute("note", notes);
+//        } else{
+//            List<StudentNotesDTO> notes = studentNotesService.getAllNotes();
+//            model.addAttribute("list-notes", notes);
+//        }
+//        return "list-notes";
+//    }
+
+//        @PostMapping("/search-form-note")
+//        public String searchNotes(@RequestParam(required = false) String keyword, Model model){
+//
+//            List<StudentNotes> notes = studentNotesService.findByKeyword(keyword);
+//            model.addAttribute("note", notes);
+//            return "list-notes";
+//        }
+
+        @PostMapping("/search-form-note")
+        public ModelAndView searchNotes(@RequestParam("keyword") String keyword){
+            ModelAndView mav = new ModelAndView("list-notes");
+            List<StudentNotes> notes = studentNotesService.findByKeyword(keyword);
+            mav.addObject("note",notes);
+            mav.addObject("keyword", keyword);
+            return mav;
+        }
+
+
+
+
+//    @PostMapping("/search-form-note-lesson")
+//    public String searchNotesLesson(@RequestParam("lesson") String lessonCode, Model model){
+//        if (lessonCode != null) {
+//            List<StudentNotes> lessons = studentNotesService.findByLessonLessonCodeContainingIgnoreCase(lessonCode);
+//            model.addAttribute("lesson", lessons);
+//        } else{
+//            List<StudentNotesDTO> lessons = studentNotesService.getAllNotes();
+//            model.addAttribute("list-notes", lessons);
+//        }
+//        return "list-notes";
+//    }
+
+
+
+//
+//    @GetMapping("/pdf/note")
+//    public void generator(HttpServletResponse response) throws DocumentException, IOException {
+//        response.setContentType("application/pdf");
+//        DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+//        String currentDateTime = dateFormat.format(new Date());
+//        String headerkey = "Content-Disposition";
+//        String headervalue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+//        response.setHeader(headerkey, headervalue);
+//        List<StudentNotesDTO> notes = studentNotesService.getAllNotes();
+//        PDFGeneratorNote generatorNote = new PDFGeneratorNote();
+//        generatorNote.setNoteList(notes);
+//        generatorNote.generate((HttpServletResponse) response.getWriter());
+//    }
+
 
     @GetMapping("/showFormForNoteAdd")
     public String showFormForNoteAdd(Model theModel) {

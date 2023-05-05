@@ -12,7 +12,8 @@ import java.util.List;
 public interface NoteRepository extends JpaRepository<StudentNotes, Integer>{
     List<StudentNotes> findAllByOrderByNoteDesc();
     List<StudentNotes> findByNote(Integer note);
-//    List<StudentNotes> findByLessonCode(String lessonCode);
+    List<StudentNotes> findAllByNoteContaining(String keyword);
+    List<StudentNotes> findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(String lessonCode, String firstName, String lastName);
 }
 
 
