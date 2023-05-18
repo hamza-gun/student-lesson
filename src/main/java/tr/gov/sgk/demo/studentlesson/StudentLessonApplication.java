@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 public class StudentLessonApplication {
     public static void main(String[] args) {
         SpringApplication.run(StudentLessonApplication.class, args);
+
     }
 
     @Bean

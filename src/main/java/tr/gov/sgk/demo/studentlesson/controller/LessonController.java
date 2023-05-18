@@ -1,6 +1,6 @@
 package tr.gov.sgk.demo.studentlesson.controller;
 
-import com.lowagie.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import tr.gov.sgk.demo.studentlesson.dto.LessonDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Lesson;
 import tr.gov.sgk.demo.studentlesson.service.LessonService;
-//import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorLesson;
+import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorLesson;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,19 +49,19 @@ public class LessonController {
         }
     }
 
-//    @GetMapping("/pdf/lesson")
-//    public void generator(HttpServletResponse response) throws DocumentException, IOException, com.itextpdf.text.DocumentException {
-//        response.setContentType("application/pdf");
-//        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
-//        String currentDateTime = dateFormat.format(new Date());
-//        String headerkey = "Content-Disposition";
-//        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
-//        response.setHeader(headerkey, headervalue);
-//        List<LessonDTO> lessons = lessonService.getAllLessons();
-//        PDFGeneratorLesson generetorUser = new PDFGeneratorLesson();
-//        generetorUser.setLessonList(lessons);
-//        generetorUser.generate(response);
-//    }
+    @GetMapping("/pdf/lesson")
+    public void generator(HttpServletResponse response) throws DocumentException, IOException, com.itextpdf.text.DocumentException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerkey = "Content-Disposition";
+        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
+        response.setHeader(headerkey, headervalue);
+        List<LessonDTO> lessons = lessonService.getAllLessons();
+        PDFGeneratorLesson generetorUser = new PDFGeneratorLesson();
+        generetorUser.setLessonList(lessons);
+        generetorUser.generate(response);
+    }
 
     @GetMapping("/showFormForLessonAdd")
     public String showFormForLessonAdd(Model theModel) {

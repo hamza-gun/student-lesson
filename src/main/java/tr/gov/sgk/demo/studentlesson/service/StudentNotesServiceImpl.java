@@ -63,16 +63,29 @@ public class StudentNotesServiceImpl implements StudentNotesService {
     }
 
     @Override
-    public List<StudentNotes> findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(String lessonCode, String firstName, String lastName) {
-        return studentNotesRepository.findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(lessonCode, firstName, lastName);
+    public List<StudentNotes> findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCase(String firstName, String lastName, String lessonName, String lessonCode) {
+        return studentNotesRepository.findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCase(firstName, lastName, lessonName, lessonCode);
+    }
+
+    @Override
+    public List<StudentNotes> findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCaseOrNote(String firstName, String lastName, String lessonName, String lessonCode, Integer note) {
+        return studentNotesRepository.findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCaseOrNote(firstName, lastName, lessonName, lessonCode, note);
     }
 
     public List<StudentNotes> findByKeyword(String keyword) {
         if (keyword == null) {
             keyword = "";
         }
-        return studentNotesRepository.findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(keyword, keyword, keyword);
+       return studentNotesRepository.findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCase(keyword, keyword, keyword, keyword);
     }
+
+    public List<StudentNotes> findByKeywordAndNote(String keyword, Integer note) {
+        if (keyword == null) {
+            keyword = "";
+        }
+        return studentNotesRepository.findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCaseOrNote(keyword, keyword, keyword, keyword, note);
+    }
+
     public List<StudentNotes> getNotesContainingKeyword(String keyword) {
         return studentNotesRepository.findAllByNoteContaining(keyword);
     }

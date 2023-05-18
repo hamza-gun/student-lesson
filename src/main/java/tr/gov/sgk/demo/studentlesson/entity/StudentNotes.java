@@ -12,7 +12,7 @@ public class StudentNotes {
     private int id;
 
     @Column(name = "note")
-    private int note;
+    private Integer note;
 
     @ManyToOne
     @JoinColumn(name = "student_id")

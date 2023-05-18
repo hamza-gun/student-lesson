@@ -1,6 +1,5 @@
 package tr.gov.sgk.demo.studentlesson.controller;
 
-import com.lowagie.text.DocumentException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import tr.gov.sgk.demo.studentlesson.dto.StudentDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Student;
 import tr.gov.sgk.demo.studentlesson.service.StudentService;
-//import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorStudent;
+import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorStudent;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -49,23 +48,23 @@ public class StudentController {
         }
     }
 
-//    @GetMapping("/pdf/student")
-//    public void generator(HttpServletResponse response) throws DocumentException, IOException {
-//        response.setContentType("application/pdf");
-//        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
-//        String currentDateTime = dateFormat.format(new Date());
-//        String headerkey = "Content-Disposition";
-//        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
-//        response.setHeader(headerkey, headervalue);
-//        List<StudentDTO> students = studentService.getAllStudents();
-//        PDFGeneratorStudent generetorUser = new PDFGeneratorStudent();
-//        generetorUser.setStudentList(students);
-//        //generetorUser.generate(response);
-//    }
+    @GetMapping("/pdf/student")
+    public void generator(HttpServletResponse response) throws IOException, com.itextpdf.text.DocumentException{
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerkey = "Content-Disposition";
+        String headervalue = "attachment; filename=pdf_"+currentDateTime+".pdf";
+        response.setHeader(headerkey, headervalue);
+        List<StudentDTO> students = studentService.getAllStudents();
+        PDFGeneratorStudent generetorUser = new PDFGeneratorStudent();
+        generetorUser.setStudentList(students);
+        generetorUser.generate(response);
+    }
 
     @GetMapping("/showFormForStudentAdd")
     public String showFormForStudentAdd(Model theModel) {
-        // create model attribute to bind form data
+
         Student theStudent = new Student();
         theModel.addAttribute("student", theStudent);
         return "form-student";
@@ -79,6 +78,7 @@ public class StudentController {
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "form-student";
         }
+
         studentService.saveStudent(theStudent);
         return "redirect:/student/list-students";
     }
@@ -93,7 +93,7 @@ public class StudentController {
     }
 
     @GetMapping("/delete-student")
-    public String deleteCategory(@RequestParam("studentId") Integer theId) {
+    public String deleteStudent(@RequestParam("studentId") Integer theId) {
         StudentDTO tempStudent = studentService.getStudentById(theId);
 
         if (tempStudent == null) {

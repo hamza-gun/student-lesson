@@ -18,8 +18,12 @@ public interface StudentNotesService {
 
     List<StudentNotes> findByNote(int note);
 
-    List<StudentNotes>findByLessonLessonCodeContainingIgnoreCaseOrStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCase(String lessonCode, String firstName, String lastName);
+    List<StudentNotes>findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCase(String firstName, String lastName, String lessonName, String lessonCode);
+
+    List<StudentNotes>findByStudentFirstNameContainingIgnoreCaseOrStudentLastNameContainingIgnoreCaseOrLessonLessonNameContainingIgnoreCaseOrLessonLessonCodeContainingIgnoreCaseOrNote(String firstName, String lastName, String lessonName, String lessonCode, Integer note);
 
     List<StudentNotes> findByKeyword(String keyword);
+
+    List<StudentNotes> findByKeywordAndNote(String keyword, Integer note);
 
 }

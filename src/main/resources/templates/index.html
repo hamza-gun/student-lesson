@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -12,5 +13,15 @@
     <br>
     <a href="../note/list-notes"><span>Click here to Note Page</span></a>
     <br>
+    <a href="../student-lessons/list-student-lessons"><span>Click here to Student-Lesson Mapping Page</span></a>
+    <p>
+        User: <span sec:text="${principal.username}"></span>
+    </p>
+    <p>
+        Roles: <span sec:text="${principal.authorities}"></span>
+    </p>
+    <form action="#" th:action="@{/logout}" method="POST">
+        <input type="submit" value="Logout" />
+    </form>
 </body>
 </html>
