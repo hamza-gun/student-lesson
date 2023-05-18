@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: html_head}"></head>
+<body>
+<div class="container">
+    <h3>Student-Lesson Directory</h3>
+    <hr>
+    <p class="h4 mb-4">Save Student-Lesson</p>
+    <form th:action="@{/student-lessons/save-student-lessons}" method="post" th:object="${studentLessons}" class="student-lesson-form">
+        <!-- Add hidden form field to handle update -->
+        <div class="form-group">
+            <input type="hidden" th:field="*{id}" />
+        </div>
+        <div class="form-group">
+            <label for="student">Student Name</label>
+            <select id="student" class="form-control" name="studentId" style="width: 250px">
+                <option th:each="student : ${students}"
+                        th:value="${student.id}"
+                        th:text="${student.firstName + ' ' + student.lastName}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="lesson">Lesson Name</label>
+            <select id="lesson" class="form-control" name="lessonIds" style="width: 250px" multiple>
+                <option th:each="lesson : ${lessons}"
+                        th:value="${lesson.id}"
+                        th:text="${lesson.lessonName}">
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-info col-2">Save</button>
+        <button type="button" class="btn btn-danger col-2" onclick="location.href='/student-lessons/list-student-lessons'">Cancel</button>
+    </form>
+    <hr>
+    <a th:href="@{/student-lessons/list-student-lessons}">Back to Student-Lesson List</a>
+</div>
+</body>
+</html>
