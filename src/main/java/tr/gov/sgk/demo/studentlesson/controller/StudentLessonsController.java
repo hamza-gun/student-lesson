@@ -56,7 +56,7 @@ public class StudentLessonsController {
         } catch (Exception ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while saving student lesson.");
         }
-        return "redirect:/student-lessons";
+        return "redirect:/student-lessons/list-student-lessons";
     }
 
     @GetMapping("/showFormForStudentLessonAdd")

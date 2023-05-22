@@ -116,12 +116,14 @@ public class StudentServiceImpl implements StudentService {
     public List<StudentLessonsDTO> getAllStudentLessons() {
         List<StudentLessons> studentLessonsList = studentLessonsRepository.findAll();
         List<StudentLessonsDTO> studentLessonsDTOList = new ArrayList<>();
-        for (StudentLessons studentLessons : studentLessonsList) {
-            StudentLessonsDTO studentLessonsDTO = new StudentLessonsDTO();
-            studentLessonsDTO.setId(studentLessons.getId());
-            studentLessonsDTO.setStudentId(studentLessons.getStudent().getId());
-            studentLessonsDTO.setLessonIds(Collections.singletonList(studentLessons.getLesson().getId()));
-            studentLessonsDTOList.add(studentLessonsDTO);
+        if(studentLessonsList.size()!=0) {
+            for (StudentLessons studentLessons : studentLessonsList) {
+                StudentLessonsDTO studentLessonsDTO = new StudentLessonsDTO();
+                studentLessonsDTO.setId(studentLessons.getId());
+                studentLessonsDTO.setStudentId(studentLessons.getStudent().getId());
+                studentLessonsDTO.setLessonIds(Collections.singletonList(studentLessons.getLesson().getId()));
+                studentLessonsDTOList.add(studentLessonsDTO);
+            }
         }
         return studentLessonsDTOList;
     }

@@ -28,7 +28,7 @@ public class LessonController {
         this.lessonService = lessonService;
     }
 
-    @GetMapping("/list-lessons")
+    @GetMapping("/list-lessons?ad=abc&")
     public String getAllLessons(Model model) {
         List<LessonDTO> lessonDTOList = lessonService.getAllLessons();
         model.addAttribute("lesson", lessonDTOList);

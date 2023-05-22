@@ -20,8 +20,10 @@
         </thead>
         <tbody>
         <tr th:each="studentLesson : ${studentLessons}">
-            <td th:text="${studentLesson.student.firstName}"/>
-            <td th:text="${studentLesson.lesson.lessonName}"/>
+<!--            <td th:text="${studentLesson.student.firstName}"/>-->
+<!--            <td th:text="${studentLesson.lesson.lessonName}"/>-->
+            <td th:text="${studentLesson.studentId}"/>
+            <td th:text="${studentLesson.studentId}"/>
             <td>
                 <a th:href="@{/student-lessons/showFormForStudentLessonUpdate(studentLessonId=${studentLesson.id})}"
                    class="btn btn-info btn-sm">
