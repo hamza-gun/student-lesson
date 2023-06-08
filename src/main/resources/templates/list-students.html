@@ -1,7 +1,12 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-<head th:replace="~{fragments :: html_head}"></head>
+<head th:replace="~{fragments :: html_head}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+</head>
 <body>
     <div class="container">
         <div th:replace="~{fragments :: html_navbar}"></div>
@@ -15,11 +20,12 @@
             </a>
         </div>
         <div class="text-left mb-3">
-            <form th:action="@{/student/search-form-student}" method="post">
+            <form th:action="@{/student/search-form-student}" method="post" id="searchForm">
                 <div class="form-group row">
-                    <label for="number" class="col-sm-2 col-form-label">Student Number:</label>
+                    <label for="students" class="col-sm-2 col-form-label">Arama Kriteri Giriniz :</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="number" name="number" placeholder="Enter student number">
+                        <input type="text" class="form-control" id="students" name="keyword" placeholder="Arama Kriteri Giriniz"
+                               th:value="${keyword}" value="${keyword}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -29,21 +35,37 @@
                     </div>
                 </div>
             </form>
+            <script th:inline="javascript">
+                var timer;
+                $('input[name="keyword"]').on('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        $('#searchForm').submit();
+                    }, 1500);
+                });
+            </script>
         </div>
-        <table class="table table-bordered table-striped table-responsive-md">
-            <thead class="table-dark">
+        <table id="studentTable" class="table table-bordered table-striped table-responsive-md">
+            <thead class="table-primary">
                 <tr>
-                    <th>Student Number</th>
+                    <th style="color: red;">Student Number</th>
                     <th>Student First Name</th>
                     <th>Student Last Name</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="tempstudent : ${student}">
-                    <td th:text="${tempstudent.number}"/>
-                    <td th:text="${tempstudent.firstName}"/>
-                    <td th:text="${tempstudent.lastName}"/>
+<!--                <tr th:each="tempstudent : ${#lists.isEmpty(students) ? list-students : students}">-->
+<!--                    <td th:text="${tempstudent.number}"/>-->
+<!--                    <td th:text="${tempstudent.firstName}"/>-->
+<!--                    <td th:text="${tempstudent.lastName}"/>-->
+                <tr th:each="tempstudent : ${students}">
+<!--                    <td th:text="${tempstudent.number ?: ''}"/>-->
+                    <td>
+                        <span th:text="${tempstudent.number ?: ''}" th:class="${'text-danger'}"></span>
+                    </td>
+                    <td th:text="${tempstudent.firstName ?: ''}"/>
+                    <td th:text="${tempstudent.lastName ?: ''}"/>
                     <td>
                         <a th:href="@{/student/showFormForStudentUpdate(studentId=${tempstudent.id})}"
                            class="btn btn-info btn-sm">
@@ -60,5 +82,85 @@
             </tbody>
         </table>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#studentTable').DataTable({
+                autoWidth: false,
+                columnDefs: [
+                    {
+                        targets: ['_all'],
+                        className: 'mdc-data-table__cell',
+                    },
+                ],
+                "lengthMenu": [ 10, 25, 50, 75, 100 ],
+                "pageLength": 10,
+                "language": {
+                    "searchPlaceholder": "Search students... ",
+                    "search": "Arama Kriteri Giriniz : ",
+                    "lengthMenu": "Show _MENU_ entries ",
+                    "infoFiltered": "( _MAX_ toplam veri bulunmaktadır.)",
+                    "lengthMenu": "Sayfada _MENU_ kayıt gösteriliyor ",
+                    "info": "_START_ ile _END_ arasında _TOTAL_ kayıt vardır ",
+                    "paginate": {
+                        "previous": "<<<<<",
+                        "next": ">>>>>"
+                    }
+                },
+                 dom: '<"float-right"B><"clear">frt<"float-right"lip>',
+                   buttons: [
+                    'copy',
+                    'csv',
+                        {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'buttons-excel',
+                        title: 'Student List',
+                        exportOptions: {
+                            columns: [0, 1, 2]
+                       }
+                       },
+                       {
+                            extend: 'pdf',
+                            text: 'PDF',
+                            className: 'buttons-pdf',
+                            title: 'Student List',
+                            exportOptions: {
+                                columns: [0, 1, 2]
+                            },
+                            customize: function(doc) {
+                                doc.defaultStyle.alignment = 'center';
+
+                                doc.content[1].table.widths = Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                                return doc;
+                       }
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        className: 'buttons-print',
+                        exportOptions: {
+                            columns: [0, 1, 2]
+                        }
+                    }
+
+                ],
+                    pagingType: "full_numbers",
+                    initComplete: function(settings, json) {
+                        $('#studentTable').css('font-size', '18px');
+                        $('#studentTable').find('th').css('font-size', '18px');
+                    }
+            });
+        });
+    </script>
 </body>
 </html>

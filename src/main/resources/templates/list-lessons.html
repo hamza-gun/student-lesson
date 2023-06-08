@@ -1,5 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 <head th:replace="~{fragments :: html_head}"></head>
 <body>
@@ -7,19 +9,20 @@
         <div th:replace="~{fragments :: html_navbar}"></div>
 
         <div class="text-left mb-3">
-            <a th:href="@{/lesson/showFormForLessonAdd}"
+            <a th:href="@{/lesson/add-form}"
                class="btn btn-info"> Add Lesson
             </a>
-            <a th:href="@{/lesson/pdf/lesson}"
+            <a th:href="@{/lesson/pdf}"
                class="btn btn-info"> Lesson List PDF
             </a>
         </div>
         <div class="text-left mb-3">
-            <form th:action="@{/lesson/search-form-lesson}" method="post">
+            <form th:action="@{/lesson/search}" method="post" id="searchForm">
                 <div class="form-group row">
-                    <label for="lessonCode" class="col-sm-2 col-form-label">Lesson Code:</label>
+                    <label for="lessons" class="col-sm-2 col-form-label">Arama Kriteri Giriniz :</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="lessonCode" name="lessonCode" placeholder="Enter Lesson Code">
+                        <input type="text" class="form-control" id="lessons" name="keyword" placeholder="Arama Kriteri Giriniz"
+                               th:value="${keyword}" value="${keyword}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -29,6 +32,15 @@
                     </div>
                 </div>
             </form>
+            <script th:inline="javascript">
+                var timer;
+                $('input[name="keyword"]').on('input', function() {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        $('#searchForm').submit();
+                    }, 1500);
+                });
+            </script>
         </div>
         <table class="table table-bordered table-striped table-responsive-md">
             <thead class="table-dark">
@@ -39,23 +51,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="templesson : ${lesson}">
-                    <td th:text="${templesson.lessonCode}"/>
-                    <td th:text="${templesson.lessonName}"/>
-                    <td>
-                        <!-- Add "update" button/link -->
-                        <a th:href="@{/lesson/showFormForLessonUpdate(lessonId=${templesson.id})}"
-                           class="btn btn-info btn-sm">
-                            Update
-                        </a>
-                        <!-- Add "delete" button/link -->
-                        <a th:href="@{/lesson/delete-lesson(lessonId=${templesson.id})}"
-                           class="btn btn-danger btn-sm"
-                           onclick="if (!(confirm('Are you sure you want to delete this lesson?'))) return false">
-                            Delete
-                        </a>
-                    </td>
-                </tr>
+            <tr th:each="templesson : ${#lists.isEmpty(lessons) ? list-lessons : lessons}">
+                <td th:text="${templesson.lessonCode}"/>
+                <td th:text="${templesson.lessonName}"/>
+                <td>
+                    <!-- Add "update" button/link -->
+                    <a th:href="@{/lesson/update-form(lessonId=${templesson.id})}"
+                       class="btn btn-info btn-sm">
+                        Update
+                    </a>
+                    <!-- Add "delete" button/link -->
+                    <a th:href="@{/lesson/delete(lessonId=${templesson.id})}"
+                       class="btn btn-danger btn-sm"
+                       onclick="if (!(confirm('Are you sure you want to delete this lesson?'))) return false">
+                        Delete
+                    </a>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

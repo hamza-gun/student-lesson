@@ -9,4 +9,5 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, Integer>{
     List<Student> findAllByOrderByNumber();
     List<Student> findByNumber(Integer number);
+    List<Student> findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String firstName, String lastName);
 }

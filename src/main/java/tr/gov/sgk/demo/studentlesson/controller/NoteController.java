@@ -49,8 +49,8 @@ public class NoteController {
 
     @GetMapping("/list-notes")
     public String listNotes(Model theModel) {
-        List<StudentNotesDTO> studentNotesDTOList = studentNotesService.getAllNotes();
-        theModel.addAttribute("note", studentNotesDTOList);
+        List<StudentNotesDTO> notesList = studentNotesService.getAllNotes();
+        theModel.addAttribute("note", notesList);
         return "list-notes";
     }
 

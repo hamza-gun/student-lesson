@@ -1,23 +1,26 @@
 package tr.gov.sgk.demo.studentlesson.log;
 
 import org.apache.logging.log4j.LogManager;
+import org.springframework.stereotype.Component;
 import tr.gov.sgk.demo.studentlesson.dto.LessonDTO;
 import tr.gov.sgk.demo.studentlesson.dto.StudentDTO;
 import tr.gov.sgk.demo.studentlesson.dto.StudentNotesDTO;
 import org.apache.logging.log4j.Logger;
 
+@Component
 public class ProjectLogger {
     private static final Logger logger = LogManager.getLogger(ProjectLogger.class);
 
     public void addStudent(StudentDTO student) {
         // some code here to add student
         try {
-            logger.debug("Student added: " + student.getFirstName() + " " + student.getLastName());
-            logger.info("Student added: " + student.getFirstName() + " " + student.getLastName());
-            logger.warn("Student added: " + student.getFirstName() + " " + student.getLastName());
-            logger.error("Student added: " + student.getFirstName() + " " + student.getLastName());
+            String logMessage = "Student added: " + student.getFirstName() + " " + student.getLastName() + " " + student.getNumber();
+            logger.debug(logMessage);
+            logger.info(logMessage);
+            logger.warn(logMessage);
+            logger.error(logMessage);
         }catch (Exception e){
-            System.out.println(e);
+            logger.error("Error while adding student", e);
         }
 
     }

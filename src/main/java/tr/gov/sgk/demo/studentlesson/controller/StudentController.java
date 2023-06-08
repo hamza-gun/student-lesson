@@ -7,8 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import tr.gov.sgk.demo.studentlesson.dto.StudentDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Student;
+import tr.gov.sgk.demo.studentlesson.log.ProjectLogger;
 import tr.gov.sgk.demo.studentlesson.service.StudentService;
 import tr.gov.sgk.demo.studentlesson.utility.PDFGeneratorStudent;
 
@@ -23,29 +25,33 @@ import java.util.List;
 public class StudentController {
     private StudentService studentService;
 
+    public ProjectLogger projectLogger;
+
     @Autowired
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, ProjectLogger projectLogger) {
         this.studentService = studentService;
+        this.projectLogger = projectLogger;
     }
 
     @GetMapping("/list-students")
     public String getAllStudents(Model model) {
-        List<StudentDTO> studentDTOList = studentService.getAllStudents();
-        model.addAttribute("student", studentDTOList);
+        List<StudentDTO> studentList = studentService.getAllStudents();
+        model.addAttribute("students", studentList);
         return "list-students";
     }
 
     @PostMapping("/search-form-student")
-    public String searchStudents(@RequestParam("number") Integer number, Model model) {
-        if(number != null) {
-            List<Student> student = studentService.findByNumber(number);
-            model.addAttribute("student", student);
-            return "list-students";
-        } else{
-            List<StudentDTO> student = studentService.getAllStudents();
-            model.addAttribute("list-students",student);
-            return "list-students";
+    public ModelAndView searchStudents(@RequestParam(value = "keyword", required = false) String keyword) {
+        ModelAndView mav = new ModelAndView("list-students");
+        List<?> students;
+        if (keyword != null && !keyword.isEmpty()) {
+            students = studentService.findByKeyword(keyword);
+        } else {
+            students = studentService.getAllStudents();
         }
+        mav.addObject("students", students);
+        mav.addObject("keyword", keyword);
+        return mav;
     }
 
     @GetMapping("/pdf/student")
@@ -65,13 +71,13 @@ public class StudentController {
     @GetMapping("/showFormForStudentAdd")
     public String showFormForStudentAdd(Model theModel) {
 
-        Student theStudent = new Student();
-        theModel.addAttribute("student", theStudent);
+        StudentDTO theStudent = new StudentDTO();
+        theModel.addAttribute("students", theStudent);
         return "form-student";
     }
 
     @PostMapping("/save-student")
-    public String saveStudent(@Valid @ModelAttribute("student") StudentDTO theStudent,
+    public String saveStudent(@Valid @ModelAttribute("students") StudentDTO theStudent,
                               BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -80,26 +86,27 @@ public class StudentController {
         }
 
         studentService.saveStudent(theStudent);
+        projectLogger.addStudent(theStudent);
         return "redirect:/student/list-students";
     }
 
     @GetMapping("/showFormForStudentUpdate")
-    public String showFormForStudentUpdate(@RequestParam("studentId") Integer theId,
+    public String showFormForStudentUpdate(@RequestParam("studentId") Integer studentId,
                                            Model theModel) {
-        StudentDTO theStudent = studentService.getStudentById(theId);
+        StudentDTO theStudent = studentService.getStudentById(studentId);
         List<StudentDTO> studentList = studentService.getAllStudents();
-        theModel.addAttribute("student", theStudent);
+        theModel.addAttribute("students", theStudent);
         return "form-student";
     }
 
     @GetMapping("/delete-student")
-    public String deleteStudent(@RequestParam("studentId") Integer theId) {
-        StudentDTO tempStudent = studentService.getStudentById(theId);
+    public String deleteStudent(@RequestParam("studentId") Integer studentId) {
+        StudentDTO tempStudent = studentService.getStudentById(studentId);
 
         if (tempStudent == null) {
-            throw new RuntimeException("Student id not found : " + theId);
+            throw new RuntimeException("Student id not found : " + studentId);
         }
-        studentService.deleteStudentbyId(theId);
+        studentService.deleteStudentbyId(studentId);
         return "redirect:/student/list-students";
     }
 

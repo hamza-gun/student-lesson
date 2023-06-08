@@ -1,5 +1,7 @@
 package tr.gov.sgk.demo.studentlesson.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import tr.gov.sgk.demo.studentlesson.dto.StudentDTO;
 import tr.gov.sgk.demo.studentlesson.dto.StudentLessonsDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Student;
@@ -22,4 +24,10 @@ public interface StudentService {
     void saveStudentLesson(StudentLessonsDTO studentLessonsDTO) throws DuplicateStudentLessonException, ResourceNotFoundException;
 
     List<StudentLessonsDTO> getAllStudentLessons();
+
+    List<Student> findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String firstName, String lastName);
+
+    List<Student> findByKeyword( String keyword);
+
+//    Page<Student> findPaginated(Pageable pageable);
 }

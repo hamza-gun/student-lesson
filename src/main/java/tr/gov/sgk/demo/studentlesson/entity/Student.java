@@ -29,4 +29,10 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     private List<StudentNotes> studentNotes = new ArrayList<>();
+
+    public Student(){
+    }
+
+    public Student(int i, String spring_in_action) {
+    }
 }

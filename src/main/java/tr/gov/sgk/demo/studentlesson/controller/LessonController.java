@@ -1,13 +1,17 @@
 package tr.gov.sgk.demo.studentlesson.controller;
 
 import com.itextpdf.text.DocumentException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import tr.gov.sgk.demo.studentlesson.dto.LessonDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Lesson;
 import tr.gov.sgk.demo.studentlesson.service.LessonService;
@@ -28,28 +32,33 @@ public class LessonController {
         this.lessonService = lessonService;
     }
 
-    @GetMapping("/list-lessons?ad=abc&")
+    @Autowired
+    private HttpServletRequest httpServletRequest;
+
+    @GetMapping("/list-lessons")
     public String getAllLessons(Model model) {
         List<LessonDTO> lessonDTOList = lessonService.getAllLessons();
-        model.addAttribute("lesson", lessonDTOList);
+        model.addAttribute("lessons", lessonDTOList);
 
         return "list-lessons";
     }
 
-    @PostMapping("/search-form-lesson")
-    public String searchLessons(@RequestParam("lessonCode") String lessonCode, Model model) {
-        if(lessonCode != null) {
-            List<Lesson> lesson = lessonService.findByLessonCode(lessonCode);
-            model.addAttribute("lesson", lesson);
-            return "list-lessons";
-        } else{
-            List<LessonDTO> lesson = lessonService.getAllLessons();
-            model.addAttribute("list-lessons",lesson);
-            return "list-lessons";
+    @PostMapping("/search")
+    public ModelAndView searchLessons(@RequestParam(value = "keyword", required = false) String keyword) {
+        ModelAndView mav = new ModelAndView("list-lessons");
+        List<?> lessons;
+        if(keyword != null && !keyword.isEmpty()){
+            lessons = lessonService.findByKeyword(keyword);
+        }else{
+            lessons = lessonService.getAllLessons();
         }
+        mav.addObject("lessons", lessons);
+        mav.addObject("keyword", keyword);
+
+        return mav;
     }
 
-    @GetMapping("/pdf/lesson")
+    @GetMapping("/pdf")
     public void generator(HttpServletResponse response) throws DocumentException, IOException, com.itextpdf.text.DocumentException {
         response.setContentType("application/pdf");
         DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD:HH:MM:SS");
@@ -63,7 +72,7 @@ public class LessonController {
         generetorUser.generate(response);
     }
 
-    @GetMapping("/showFormForLessonAdd")
+    @GetMapping("/add-form")
     public String showFormForLessonAdd(Model theModel) {
         // create model attribute to bind form data
         Lesson theLesson = new Lesson();
@@ -71,7 +80,7 @@ public class LessonController {
         return "form-lesson";
     }
 
-    @PostMapping("/save-lesson")
+    @PostMapping("/save")
     public String saveLesson(@Valid @ModelAttribute("lesson") LessonDTO theLessonDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "form-lesson";
@@ -80,24 +89,24 @@ public class LessonController {
         return "redirect:/lesson/list-lessons";
     }
 
-    @GetMapping("/showFormForLessonUpdate")
-    public String showFormForLessonUpdate(@RequestParam("lessonId") Integer theId,
+    @GetMapping("/update-form")
+    public String showFormForLessonUpdate(@RequestParam("lessonId") Integer lessonId,
                                           Model theModel) {
-        LessonDTO theLessonDTO = lessonService.getLessonById(theId);
+        LessonDTO theLessonDTO = lessonService.getLessonById(lessonId);
         List<LessonDTO> lessonList = lessonService.getAllLessons();
         theModel.addAttribute("lesson", theLessonDTO);
 
         return "form-lesson";
     }
 
-    @GetMapping("/delete-lesson")
-    public String deleteLesson(@RequestParam("lessonId") Integer theId) {
-        LessonDTO tempLesson = lessonService.getLessonById(theId);
+    @GetMapping("/delete")
+    public String deleteLesson(@RequestParam("lessonId") Integer lessonId) {
+        LessonDTO tempLesson = lessonService.getLessonById(lessonId);
 
         if (tempLesson == null) {
-            throw new RuntimeException("Lesson id not found : " + theId);
+            throw new RuntimeException("Lesson id not found : " + lessonId);
         }
-        lessonService.deleteLessonById(theId);
+        lessonService.deleteLessonById(lessonId);
         return "redirect:/lesson/list-lessons";
     }
 }

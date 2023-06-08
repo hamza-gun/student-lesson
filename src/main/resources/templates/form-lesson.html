@@ -6,7 +6,7 @@
         <h3>Lesson Directory</h3>
         <hr>
         <p class="h4 mb-4">Save Lesson</p>
-        <form th:action="@{/lesson/save-lesson}" method="post" th:object="${lesson}" class="student-from">
+        <form th:action="@{/lesson/save}" method="post" th:object="${lesson}" class="lesson-form">
             <div class="form-group">
                 <input type="hidden" th:field="*{id}" />
             </div>

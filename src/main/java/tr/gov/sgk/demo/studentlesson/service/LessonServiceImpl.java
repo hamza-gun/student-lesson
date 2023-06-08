@@ -2,6 +2,9 @@ package tr.gov.sgk.demo.studentlesson.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tr.gov.sgk.demo.studentlesson.dto.LessonDTO;
 import tr.gov.sgk.demo.studentlesson.entity.Lesson;
@@ -17,6 +20,11 @@ public class LessonServiceImpl implements LessonService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    public LessonServiceImpl(LessonRepository lessonRepository, ModelMapper modelMapper) {
+        this.lessonRepository = lessonRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public List<LessonDTO> getAllLessons() {
@@ -44,8 +52,36 @@ public class LessonServiceImpl implements LessonService {
         lessonRepository.delete(lesson);
     }
 
+//    @Override
+//    public List<Lesson> findByLessonCode(String lessonCode) {
+//        return lessonRepository.findByLessonCode(lessonCode);
+//    }
+
     @Override
-    public List<Lesson> findByLessonCode(String lessonCode) {
-        return lessonRepository.findByLessonCode(lessonCode);
+    public List<Lesson> findByLessonNameContainingIgnoreCaseOrLessonCodeContainingIgnoreCase(String lessonName, String lessonCode) {
+        return lessonRepository.findByLessonNameContainingIgnoreCaseOrLessonCodeContainingIgnoreCase(lessonName, lessonCode);
     }
+
+    @Override
+    public List<Lesson> findByKeyword(String keyword) {
+        if (keyword == null) {
+            keyword = "";
+        }
+        return lessonRepository.findByLessonNameContainingIgnoreCaseOrLessonCodeContainingIgnoreCase(keyword, keyword);
+    }
+
+//    @Override
+//    public Page<Lesson> findByLessonCodePaged(String lessonCode, Pageable pageable) {
+//        return lessonRepository.findByLessonCode(lessonCode, pageable);
+//    }
+//
+//    @Override
+//    public Page<LessonDTO> getAllLessonsPaged(Pageable pageable) {
+//        Page<Lesson> lessonPage = lessonRepository.findAll(pageable);
+//        return lessonPage.map(this::convertToDto);
+//    }
+
+//    private LessonDTO convertToDto(Lesson lesson) {
+//        return modelMapper.map(lesson, LessonDTO.class);
+//    }
 }

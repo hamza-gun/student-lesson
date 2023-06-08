@@ -3,6 +3,10 @@ package tr.gov.sgk.demo.studentlesson.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tr.gov.sgk.demo.studentlesson.dto.StudentDTO;
 import tr.gov.sgk.demo.studentlesson.dto.StudentLessonsDTO;
@@ -12,6 +16,7 @@ import tr.gov.sgk.demo.studentlesson.exception.DuplicateStudentLessonException;
 import tr.gov.sgk.demo.studentlesson.repository.LessonRepository;
 import tr.gov.sgk.demo.studentlesson.repository.StudentLessonsRepository;
 import tr.gov.sgk.demo.studentlesson.repository.StudentRepository;
+//import tr.gov.sgk.demo.studentlesson.utility.StudentUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +33,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentLessonsRepository studentLessonsRepository;
+
+//    final private List<Student> books = StudentUtils.buildBooks();
 
     public StudentServiceImpl(StudentRepository studentRepository, LessonRepository lessonRepository,
                               StudentLessonsRepository studentLessonsRepository) {
@@ -127,6 +134,36 @@ public class StudentServiceImpl implements StudentService {
         }
         return studentLessonsDTOList;
     }
+
+    @Override
+    public List<Student> findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String firstName, String lastName) {
+        return studentRepository.findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(firstName, lastName);
+    }
+
+    @Override
+    public List<Student> findByKeyword( String keyword) {
+        if (keyword == null) {
+            keyword = "";
+        }
+        return studentRepository.findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(keyword, keyword);
+    }
+
+//    @Override
+//    public Page<Student> findPaginated(Pageable pageable) {
+//        int pageSize = pageable.getPageSize();
+//        int currentPage = pageable.getPageNumber();
+//        int startItem = currentPage * pageSize;
+//        List<Student> list;
+//        if (books.size() < startItem) {
+//            list = Collections.emptyList();
+//        } else {
+//            int toIndex = Math.min(startItem + pageSize, books.size());
+//            list = books.subList(startItem, toIndex);
+//        }
+//        Page<Student> studentPage
+//                = new PageImpl<Student>(list, PageRequest.of(currentPage, pageSize), books.size());
+//        return studentPage;
+//    }
 
     @Override
     public void deleteStudentbyId(int id) {

@@ -50,7 +50,7 @@
         <table class="table table-bordered table-striped table-responsive-md">
             <thead class="table-dark">
             <tr>
-                <th>Note</th>
+                <th style="color: red;">Note</th>
                 <th>Student First Name</th>
                 <th>Student Last Name</th>
                 <th>Lesson Name</th>
@@ -60,7 +60,10 @@
             </thead>
             <tbody>
             <tr th:each="tempnotes : ${note}">
-                <td th:text="${tempnotes.note}"/>
+                <td>
+                    <span th:text="${tempnotes.note ?: ''}" th:class="${'text-danger'}"></span>
+                </td>
+<!--                <td th:text="${tempnotes.note}"/>-->
                 <td th:text="${tempnotes.student.firstName}"/>
                 <td th:text="${tempnotes.student.lastName}"/>
                 <td th:text="${tempnotes.lesson.lessonName}"/>

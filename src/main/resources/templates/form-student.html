@@ -6,7 +6,7 @@
         <h3>Student Directory</h3>
         <hr>
         <p class="h4 mb-4">Save Student</p>
-        <form th:action="@{/student/save-student}" method="post" th:object="${student}" class="student-from">
+        <form th:action="@{/student/save-student}" method="post" th:object="${students}" class="student-from">
             <!-- Add hidden form field to handle update -->
             <div class="form-group">
                 <input type="hidden" th:field="*{id}" />
